@@ -36,7 +36,7 @@ public class Handler {
 		this.width = width;
 		this.height = height;
 		lastMessage = System.currentTimeMillis();
-		fname = "./" + Long.toString(lastMessage / 1000L) + "," + loc.y + "," + loc.x + ".mp4";
+		fname = Long.toString(lastMessage / 1000L) + "," + loc.y + "," + loc.x + ".mp4";
 		System.out.println("New handler with id " + id + " and fname " + fname + ", dimensions " + width + "," + height);
 		Endpoint.startRecording(fname);
 		this.loc = loc;
