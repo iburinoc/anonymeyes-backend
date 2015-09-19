@@ -20,9 +20,7 @@ public class Handler {
 	
 	private IMediaWriter out;
 	
-	private WritableRaster imgRaster;
 	private BufferedImage img;
-	private int[] colorBuf;
 	private long starttime;
 	
 	private List<byte[]> packets;
@@ -90,8 +88,6 @@ public class Handler {
 		System.out.println("Creating video for " + id);
 		
 		this.img = new BufferedImage(height, width, BufferedImage.TYPE_3BYTE_BGR);
-		this.imgRaster = this.img.getRaster();
-		this.colorBuf = new int[width * 3];
 		
 		out = ToolFactory.makeWriter(fname);
 		out.addVideoStream(0, 0, ICodec.ID.CODEC_ID_MPEG4, height, width);
@@ -119,17 +115,16 @@ public class Handler {
 				int idx = 34;
 				int offset = 0;
 				for(int k = 0; k < width; k++) {
-					//colorBuf[k] = ((buf[idx] & 0xff) & (0xf << offset)) << (4 - offset);
-					colorBuf[k] = 0xff000000;
-					colorBuf[k] |= ((buf[idx] & 0xff) & (0xf << offset)) << (4 - offset);
+					
+					int rgb = 0xff000000;
+					rgb |= ((buf[idx] & 0xff) & (0xf << offset)) << (4 - offset);
 					offset ^= 4; if(offset == 0) idx++;
-					colorBuf[k] |= (((buf[idx] & 0xff) & (0xf << offset)) << (4 - offset)) << 8;
+					rgb |= (((buf[idx] & 0xff) & (0xf << offset)) << (4 - offset)) << 8;
 					offset ^= 4; if(offset == 0) idx++;
-					colorBuf[k] |= (((buf[idx] & 0xff) & (0xf << offset)) << (4 - offset)) << 16;
+					rgb |= (((buf[idx] & 0xff) & (0xf << offset)) << (4 - offset)) << 16;
 					offset ^= 4; if(offset == 0) idx++;
-					img.setRGB(getRowNum(buf), k, colorBuf[k]);
+					img.setRGB(height - 1 - getRowNum(buf), k, rgb);
 				}
-				//this.imgRaster.setPixels(getRowNum(buf), 0, 1, width, colorBuf);
 			}
 			
 			out.encodeVideo(0, img, lastTime, TimeUnit.NANOSECONDS);
