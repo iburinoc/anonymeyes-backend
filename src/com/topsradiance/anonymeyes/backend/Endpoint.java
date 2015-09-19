@@ -10,6 +10,7 @@ public class Endpoint {
 			String addr = "http://localhost/newstream";
 			URL url = new URL(addr);
 			HttpURLConnection con = (HttpURLConnection) url.openConnection();
+			con.setConnectTimeout(50);
 			con.setRequestMethod("POST");
 			con.setDoOutput(true);
 			DataOutputStream wr = new DataOutputStream(con.getOutputStream());
