@@ -127,7 +127,7 @@ public class Handler {
 					offset ^= 4; if(offset == 0) idx++;
 					colorBuf[k] |= (((buf[idx] & 0xff) & (0xf << offset)) << (4 - offset)) << 16;
 					offset ^= 4; if(offset == 0) idx++;
-					img.setRGB(j, k, colorBuf[k]);
+					img.setRGB(getRowNum(buf), k, colorBuf[k]);
 				}
 				//this.imgRaster.setPixels(getRowNum(buf), 0, 1, width, colorBuf);
 			}
