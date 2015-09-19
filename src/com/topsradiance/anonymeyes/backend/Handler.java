@@ -3,6 +3,7 @@ package com.topsradiance.anonymeyes.backend;
 import java.awt.image.BufferedImage;
 import java.awt.image.WritableRaster;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -32,6 +33,7 @@ public class Handler {
 	
 	public Handler(Long id, Location loc, int width, int height) {
 		this.packets = new ArrayList<byte[]>();
+		this.recTime = new HashMap<Integer, Long>();
 		this.id = id;
 		this.width = width;
 		this.height = height;
