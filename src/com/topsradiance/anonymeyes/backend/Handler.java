@@ -89,7 +89,7 @@ public class Handler {
 		
 		System.out.println("Creating video for " + id);
 		
-		this.img = new BufferedImage(width, height, BufferedImage.TYPE_3BYTE_BGR);
+		this.img = new BufferedImage(height, width, BufferedImage.TYPE_3BYTE_BGR);
 		this.imgRaster = this.img.getRaster();
 		this.colorBuf = new int[width * 3];
 		
@@ -122,7 +122,7 @@ public class Handler {
 					colorBuf[k] = ((buf[idx] & 0xff) & (0xf << offset)) << (4 - offset);
 					offset ^= 4; if(offset == 0) idx++;
 				}
-				this.imgRaster.setPixels(0, getRowNum(buf), width, 1, colorBuf);
+				this.imgRaster.setPixels(getRowNum(buf), 0, 1, width, colorBuf);
 			}
 			
 			out.encodeVideo(0, img, lastTime, TimeUnit.NANOSECONDS);
