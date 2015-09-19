@@ -8,25 +8,20 @@ public class Location {
 	}
 
 	public Location(byte[] buf) {
-		long a = ((buf[8] & 0xff) << 56) |
-				((buf[9] & 0xff) << 48) |
-				((buf[10] & 0xff) << 40) |
-				((buf[11] & 0xff) << 32) |
-				((buf[12] & 0xff) << 24) |
-				((buf[13] & 0xff) << 16) |
-				((buf[14] & 0xff) << 8) |
-				(buf[15] & 0xff);
-		System.out.println("lon long: " + Long.toHexString(a));
+		long a = bytesToLong(buf, 8);
+		System.out.println("lat long: " + Long.toHexString(a));
 		this.y = Double.longBitsToDouble(a);
-		long b = ((buf[16] & 0xff) << 56) |
-				((buf[17] & 0xff) << 48) |
-				((buf[18] & 0xff) << 40) |
-				((buf[19] & 0xff) << 32) |
-				((buf[20] & 0xff) << 24) |
-				((buf[21] & 0xff) << 16) |
-				((buf[22] & 0xff) << 8) |
-				(buf[23] & 0xff);
+		long b = bytesToLong(buf, 16);
 		this.x = Double.longBitsToDouble(b);
-		System.out.println("lat long: " + Long.toHexString(b));
+		System.out.println("lon long: " + Long.toHexString(b));
 	}
+	
+	private long bytesToLong(byte[] b, int idx) {
+	        long result = 0;
+	        for (int i = 0; i < 8; i++) {
+	            result <<= 8;
+	            result |= (b[i+idx] & 0xFF);
+	        }
+	        return result;
+	    }
 }
