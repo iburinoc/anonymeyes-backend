@@ -8,23 +8,23 @@ public class Location {
 	}
 
 	public Location(byte[] buf) {
-		long a = (buf[8] << 56) |
-				(buf[9] << 48) |
-				(buf[10] << 40) |
-				(buf[11] << 32) |
-				(buf[12] << 24) |
-				(buf[13] << 16) |
-				(buf[14] << 8) |
-				buf[15];
+		long a = ((buf[8] & 0xff) << 56) |
+				((buf[9] & 0xff) << 48) |
+				((buf[10] & 0xff) << 40) |
+				((buf[11] & 0xff) << 32) |
+				((buf[12] & 0xff) << 24) |
+				((buf[13] & 0xff) << 16) |
+				((buf[14] & 0xff) << 8) |
+				(buf[15] & 0xff);
 		this.y = Double.longBitsToDouble(a);
-		long b = (buf[16] << 56) |
-				(buf[17] << 48) |
-				(buf[18] << 40) |
-				(buf[19] << 32) |
-				(buf[20] << 24) |
-				(buf[21] << 16) |
-				(buf[22] << 8) |
-				buf[23];
+		long b = ((buf[16] & 0xff) << 56) |
+				((buf[17] & 0xff) << 48) |
+				((buf[18] & 0xff) << 40) |
+				((buf[19] & 0xff) << 32) |
+				((buf[20] & 0xff) << 24) |
+				((buf[21] & 0xff) << 16) |
+				((buf[22] & 0xff) << 8) |
+				(buf[23] & 0xff);
 		this.x = Double.longBitsToDouble(b);
 	}
 }

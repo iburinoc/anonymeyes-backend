@@ -38,20 +38,20 @@ public class Server {
 	}
 
 	public static long getId(byte[] buf) {
-		return (buf[0] << 56) |
-				(buf[1] << 48) |
-				(buf[2] << 40) |
-				(buf[3] << 32) |
-				(buf[4] << 24) |
-				(buf[5] << 16) |
-				(buf[6] << 8) |
-				buf[7];
+		return ((buf[0] & 0xff) << 56) |
+				((buf[1] & 0xff) << 48) |
+				((buf[2] & 0xff) << 40) |
+				((buf[3] & 0xff) << 32) |
+				((buf[4] & 0xff) << 24) |
+				((buf[5] & 0xff) << 16) |
+				((buf[6] & 0xff) << 8) |
+				(buf[7] & 0xff);
 	}
 
 	public static int getWidth(byte[] buf) {
-		return (buf[24] << 8) | buf[25];
+		return ((buf[24] & 0xff) << 8) | (buf[25] & 0xff);
 	}
 	public static int getHeight(byte[] buf) {
-		return (buf[26] << 8) | buf[27];
+		return ((buf[26] & 0xff) << 8) | (buf[27] & 0xff);
 	}
 }

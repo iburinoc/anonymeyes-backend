@@ -72,15 +72,15 @@ public class Handler {
 	}
 	
 	private int getFrameNum(byte[] buf) {
-		return (buf[30] << 24) |
-				(buf[31] << 16) |
-				(buf[32] <<  8) |
-				(buf[33] <<  0);
+		return ((buf[30] & 0xff) << 24) |
+				((buf[31] & 0xff) << 16) |
+				((buf[32] & 0xff) <<  8) |
+				((buf[33] & 0xff) <<  0);
 	}
 	
 	private int getRowNum(byte[] buf) {
-		return (buf[28] << 8) |
-				(buf[29] << 0);
+		return ((buf[28] & 0xff) << 8) |
+				((buf[29] & 0xff) << 0);
 	}
 	
 	public void exit() {
@@ -119,7 +119,7 @@ public class Handler {
 				int idx = 34;
 				int offset = 0;
 				for(int k = 0; k < width; k++) {
-					colorBuf[k] = (buf[idx] & (0xf << offset)) << (4 - offset);
+					colorBuf[k] = ((buf[idx] & 0xff) & (0xf << offset)) << (4 - offset);
 					offset ^= 4; if(offset == 0) idx++;
 				}
 				this.imgRaster.setPixels(0, getRowNum(buf), width, 1, colorBuf);
