@@ -94,7 +94,7 @@ public class Handler {
 		this.colorBuf = new int[width * 3];
 		
 		out = ToolFactory.makeWriter(fname);
-		out.addVideoStream(0, 0, ICodec.ID.CODEC_ID_MPEG4, width, height);
+		out.addVideoStream(0, 0, ICodec.ID.CODEC_ID_MPEG4, height, width);
 		
 		List<List<byte[]>> frames = new ArrayList<List<byte[]>>();
 		for(int i = 0; i <= maxFrame; i++) {
