@@ -13,18 +13,13 @@ public class Server {
 
 	public static void main(String[] args) throws Exception {
 		DatagramSocket serverSocket = new DatagramSocket(52525);
-		bufQueue = new ArrayDeque<byte[]>();
-		for(int i = 0; i < 1000; i++) {
-			bufQueue.addLast(new byte[65000]);
-
-		}
 		handlerMap = new HashMap<Long, Handler>();
 		
 		new Cleaner().start();
 
 		while(true) {
 			try {
-				byte[] recBuf = bufQueue.remove();
+				byte[] recBuf = new byte[512];
 				DatagramPacket receivePacket = new DatagramPacket(recBuf, recBuf.length);
 				serverSocket.receive(receivePacket);
 				System.out.println("RECEIVED: " + receivePacket.getAddress().toString());
