@@ -22,7 +22,6 @@ public class Server {
 				byte[] recBuf = new byte[512];
 				DatagramPacket receivePacket = new DatagramPacket(recBuf, recBuf.length);
 				serverSocket.receive(receivePacket);
-				System.out.println("RECEIVED: " + receivePacket.getAddress().toString());
 				long id = getId(recBuf);
 
 				if(handlerMap.get(id) == null) {

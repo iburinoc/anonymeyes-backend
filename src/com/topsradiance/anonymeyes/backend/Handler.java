@@ -85,7 +85,6 @@ public class Handler {
 	
 	public void exit() {
 		System.out.println("Closing handler " + id);
-		out.close();
 		Server.handlerMap.remove(id);
 		
 		System.out.println("Creating video for " + id);
