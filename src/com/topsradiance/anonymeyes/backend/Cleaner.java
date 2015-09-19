@@ -4,7 +4,6 @@ public class Cleaner extends Thread {
 	@Override
 	public void run() {
 		while(true) {
-			System.out.println("Cleaning");
 			long cTime = System.currentTimeMillis();
 			for(Long id : Server.handlerMap.keySet()) {
 				Handler h = Server.handlerMap.get(id);
