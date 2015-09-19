@@ -119,10 +119,17 @@ public class Handler {
 				int idx = 34;
 				int offset = 0;
 				for(int k = 0; k < width; k++) {
-					colorBuf[k] = ((buf[idx] & 0xff) & (0xf << offset)) << (4 - offset);
+					//colorBuf[k] = ((buf[idx] & 0xff) & (0xf << offset)) << (4 - offset);
+					colorBuf[k] = 0xff000000;
+					colorBuf[k] |= ((buf[idx] & 0xff) & (0xf << offset)) << (4 - offset);
 					offset ^= 4; if(offset == 0) idx++;
+					colorBuf[k] |= (((buf[idx] & 0xff) & (0xf << offset)) << (4 - offset)) << 8;
+					offset ^= 4; if(offset == 0) idx++;
+					colorBuf[k] |= (((buf[idx] & 0xff) & (0xf << offset)) << (4 - offset)) << 16;
+					offset ^= 4; if(offset == 0) idx++;
+					img.setRGB(j, k, colorBuf[k]);
 				}
-				this.imgRaster.setPixels(getRowNum(buf), 0, 1, width, colorBuf);
+				//this.imgRaster.setPixels(getRowNum(buf), 0, 1, width, colorBuf);
 			}
 			
 			out.encodeVideo(0, img, lastTime, TimeUnit.NANOSECONDS);
