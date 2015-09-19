@@ -55,6 +55,8 @@ public class Handler {
 		catch(Exception e) {
 			e.printStackTrace();
 		}
+		
+		Server.bufQueue.addLast(buf);
 	}
 	
 	public void exit() {

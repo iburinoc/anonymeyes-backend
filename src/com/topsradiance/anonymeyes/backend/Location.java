@@ -16,7 +16,7 @@ public class Location {
 				(buf[13] << 16) |
 				(buf[14] << 8) |
 				buf[15];
-		this.x = Double.longBitsToDouble(a);
+		this.y = Double.longBitsToDouble(a);
 		long b = (buf[16] << 56) |
 				(buf[17] << 48) |
 				(buf[18] << 40) |
@@ -25,6 +25,6 @@ public class Location {
 				(buf[21] << 16) |
 				(buf[22] << 8) |
 				buf[23];
-		this.y = Double.longBitsToDouble(b);
+		this.x = Double.longBitsToDouble(b);
 	}
 }
