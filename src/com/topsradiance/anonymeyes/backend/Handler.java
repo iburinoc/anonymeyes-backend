@@ -91,7 +91,7 @@ public class Handler {
 		this.img = new BufferedImage(height, width, BufferedImage.TYPE_3BYTE_BGR);
 		
 		out = ToolFactory.makeWriter(Server.ROOT_DIR + "/" + fname);
-		out.addVideoStream(0, 0, ICodec.ID.CODEC_ID_MPEG4, height, width);
+		out.addVideoStream(0, 0, ICodec.ID.CODEC_ID_H264, height, width);
 		
 		List<List<byte[]>> frames = new ArrayList<List<byte[]>>();
 		for(int i = 0; i <= maxFrame; i++) {
