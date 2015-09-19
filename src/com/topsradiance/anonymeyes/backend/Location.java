@@ -16,6 +16,7 @@ public class Location {
 				((buf[13] & 0xff) << 16) |
 				((buf[14] & 0xff) << 8) |
 				(buf[15] & 0xff);
+		System.out.println("lon long: " + Long.toHexString(a));
 		this.y = Double.longBitsToDouble(a);
 		long b = ((buf[16] & 0xff) << 56) |
 				((buf[17] & 0xff) << 48) |
@@ -26,5 +27,6 @@ public class Location {
 				((buf[22] & 0xff) << 8) |
 				(buf[23] & 0xff);
 		this.x = Double.longBitsToDouble(b);
+		System.out.println("lat long: " + Long.toHexString(b));
 	}
 }
