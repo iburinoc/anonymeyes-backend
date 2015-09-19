@@ -11,10 +11,17 @@ public class Server {
 	public static Map<Long, Handler> handlerMap;
 	public static Deque<byte[]> bufQueue;
 
+	public static String ROOT_DIR;
+
 	public static void main(String[] args) throws Exception {
+		if(args.length >= 1) {
+			ROOT_DIR = args[0];
+		} else {
+			ROOT_DIR = ".";
+		}
 		DatagramSocket serverSocket = new DatagramSocket(52525);
 		handlerMap = new HashMap<Long, Handler>();
-		
+
 		new Cleaner().start();
 
 		while(true) {

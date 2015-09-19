@@ -38,6 +38,7 @@ public class Handler {
 		lastMessage = System.currentTimeMillis();
 		fname = "./" + Long.toString(lastMessage / 1000L) + "," + loc.y + "," + loc.x + ".mp4";
 		System.out.println("New handler with id " + id + " and fname " + fname + ", dimensions " + width + "," + height);
+		Endpoint.startRecording(fname);
 		this.loc = loc;
 		this.starttime = System.nanoTime();
 	}
@@ -89,7 +90,7 @@ public class Handler {
 		
 		this.img = new BufferedImage(height, width, BufferedImage.TYPE_3BYTE_BGR);
 		
-		out = ToolFactory.makeWriter(fname);
+		out = ToolFactory.makeWriter(Server.ROOT_DIR + "/" + fname);
 		out.addVideoStream(0, 0, ICodec.ID.CODEC_ID_MPEG4, height, width);
 		
 		List<List<byte[]>> frames = new ArrayList<List<byte[]>>();
@@ -131,6 +132,6 @@ public class Handler {
 		}
 		out.close();
 		
-		Endpoint.request(fname);
+		Endpoint.doneRecording(fname);
 	}
 }
