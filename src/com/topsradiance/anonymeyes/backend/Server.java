@@ -19,6 +19,7 @@ public class Server {
 		} else {
 			ROOT_DIR = ".";
 		}
+		System.out.println("Using root dir " + ROOT_DIR);
 		DatagramSocket serverSocket = new DatagramSocket(52525);
 		handlerMap = new HashMap<Long, Handler>();
 
