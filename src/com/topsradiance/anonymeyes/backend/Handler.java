@@ -61,5 +61,7 @@ public class Handler {
 		System.out.println("Closing handler " + id);
 		out.close();
 		Server.handlerMap.remove(id);
+		
+		Endpoint.request(fname);
 	}
 }
