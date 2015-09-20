@@ -121,6 +121,7 @@ public class Handler {
 			frames.get(getFrameNum(buf)).add(buf);
 		}
 		
+		out.setForceInterleave(false);
 		long lastVTime = 0, lastATime = 0;
 		for(int i = 0, j = 0; i < frames.size() && j < audio.size();) {
 			if(recTime.containsKey(i)) {
@@ -166,6 +167,7 @@ public class Handler {
 				lastVTime++;
 			}
 		}
+		out.flush();
 		out.close();
 		
 		Endpoint.doneRecording(fname);
