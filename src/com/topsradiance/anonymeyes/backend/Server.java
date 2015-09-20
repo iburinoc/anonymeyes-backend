@@ -7,6 +7,8 @@ import java.util.Deque;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.xuggle.xuggler.ICodec;
+
 public class Server {
 	public static Map<Long, Handler> handlerMap;
 	public static Deque<byte[]> bufQueue;
@@ -21,6 +23,7 @@ public class Server {
 		}
 		System.out.println("Using root dir " + ROOT_DIR);
 		DatagramSocket serverSocket = new DatagramSocket(52525);
+		
 		handlerMap = new HashMap<Long, Handler>();
 
 		new Cleaner().start();
@@ -57,9 +60,9 @@ public class Server {
 	}
 
 	public static int getWidth(byte[] buf) {
-		return ((buf[24] & 0xff) << 8) | (buf[25] & 0xff);
+		return ((buf[25] & 0xff) << 8) | (buf[26] & 0xff);
 	}
 	public static int getHeight(byte[] buf) {
-		return ((buf[26] & 0xff) << 8) | (buf[27] & 0xff);
+		return ((buf[27] & 0xff) << 8) | (buf[28] & 0xff);
 	}
 }

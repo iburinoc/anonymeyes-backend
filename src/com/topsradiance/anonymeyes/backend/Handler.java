@@ -1,7 +1,6 @@
 package com.topsradiance.anonymeyes.backend;
 
 import java.awt.image.BufferedImage;
-import java.awt.image.WritableRaster;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -71,15 +70,15 @@ public class Handler {
 	}
 	
 	private int getFrameNum(byte[] buf) {
-		return ((buf[30] & 0xff) << 24) |
-				((buf[31] & 0xff) << 16) |
-				((buf[32] & 0xff) <<  8) |
-				((buf[33] & 0xff) <<  0);
+		return ((buf[31] & 0xff) << 24) |
+				((buf[32] & 0xff) << 16) |
+				((buf[33] & 0xff) <<  8) |
+				((buf[34] & 0xff) <<  0);
 	}
 	
 	private int getRowNum(byte[] buf) {
-		return ((buf[28] & 0xff) << 8) |
-				((buf[29] & 0xff) << 0);
+		return ((buf[29] & 0xff) << 8) |
+				((buf[30] & 0xff) << 0);
 	}
 	
 	public void exit() {
@@ -113,7 +112,7 @@ public class Handler {
 			
 			for(int j = 0; j < frames.get(i).size(); j++) {
 				byte[] buf = frames.get(i).get(j);
-				int idx = 34;
+				int idx = 35;
 				int offset = 0;
 				for(int k = 0; k < width; k++) {
 					
