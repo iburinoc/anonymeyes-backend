@@ -37,7 +37,7 @@ public class Server {
 
 				if(handlerMap.get(id) == null) {
 					Location l = new Location(recBuf);
-					handlerMap.put(id, new Handler(id, l, getWidth(recBuf), getHeight(recBuf)));
+					handlerMap.put(id, new Handler(id, l));
 				}
 
 				handlerMap.get(id).data(recBuf);

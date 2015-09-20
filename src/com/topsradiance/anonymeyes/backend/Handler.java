@@ -30,15 +30,15 @@ public class Handler {
 
 	private int maxFrame = 0;
 
-	public Handler(Long id, Location loc, int width, int height) {
+	public Handler(Long id, Location loc) {
 		this.packets = new ArrayList<byte[]>();
 		this.recTime = new HashMap<Integer, Long>();
+		this.audio = new ArrayList<byte[]>();
+		this.audioTime = new HashMap<Integer, Long>();
 		this.id = id;
-		this.width = width;
-		this.height = height;
 		lastMessage = System.currentTimeMillis();
 		fname = Long.toString(lastMessage / 1000L) + "," + loc.y + "," + loc.x + ".mp4";
-		System.out.println("New handler with id " + id + " and fname " + fname + ", dimensions " + width + "," + height);
+		System.out.println("New handler with id " + id + " and fname " + fname);
 		Endpoint.startRecording(fname);
 		this.loc = loc;
 		this.starttime = System.nanoTime();
@@ -98,6 +98,8 @@ public class Handler {
 	}
 	
 	public void exit() {
+		this.width = Server.getWidth(this.packets.get(0));
+		this.height = Server.getHeight(this.packets.get(0));
 		System.out.println("Closing handler " + id);
 		Server.handlerMap.remove(id);
 		
@@ -119,8 +121,6 @@ public class Handler {
 			frames.get(getFrameNum(buf)).add(buf);
 		}
 		
-		short sbuf[] = new short[512];
-		
 		long lastVTime = 0, lastATime = 0;
 		for(int i = 0, j = 0; i < frames.size() && j < audio.size();) {
 			if(recTime.containsKey(i)) {
@@ -134,8 +134,9 @@ public class Handler {
 			if(lastATime < lastVTime) {
 				byte[] samples = audio.get(j);
 				if(samples != null) {
-					for(int k = 0; k < samples.length / 2; k++) {
-						sbuf[k] = (short) (((samples[k * 2] & 0xff) << 8) | (samples[k * 2 + 1] & 0xff));
+					short[] sbuf = new short[(((samples[25] & 0xff) << 8) | (samples[26] & 0xff))];
+					for(int k = 0; k < sbuf.length; k++) {
+						sbuf[k] = (short) (((samples[27 + k * 2] & 0xff) << 8) | (samples[27 + k * 2 + 1] & 0xff));
 					}
 					out.encodeAudio(1, sbuf);
 				}
