@@ -16,18 +16,20 @@ public class Handler {
 	public String fname;
 	public Location loc;
 	public long lastMessage;
-	
+
 	private IMediaWriter out;
-	
+
 	private BufferedImage img;
 	private long starttime;
-	
+
 	private List<byte[]> packets;
 	private Map<Integer, Long> recTime;
+	private List<byte[]> audio;
+	private Map<Integer, Long> audioTime;
 	private int width, height;
-	
+
 	private int maxFrame = 0;
-	
+
 	public Handler(Long id, Location loc, int width, int height) {
 		this.packets = new ArrayList<byte[]>();
 		this.recTime = new HashMap<Integer, Long>();
@@ -41,16 +43,23 @@ public class Handler {
 		this.loc = loc;
 		this.starttime = System.nanoTime();
 	}
-	
+
 	public void data(byte[] buf) {
 		try {
 			lastMessage = System.currentTimeMillis();
 
-			packets.add(buf);
-			int frame = getFrameNum(buf);
-			this.maxFrame = Math.max(this.maxFrame, frame);
-			if(!recTime.containsKey(frame)) {
-				recTime.put(frame, System.nanoTime() - starttime);
+			if(buf[24] == 0) {
+
+				packets.add(buf);
+				int frame = getFrameNum(buf);
+				this.maxFrame = Math.max(this.maxFrame, frame);
+				if(!recTime.containsKey(frame)) {
+					recTime.put(frame, System.nanoTime() - starttime);
+				}
+			} else {
+				audio.add(buf);
+				int idx = getAudioIdx(buf);
+				audioTime.put(idx, System.nanoTime() - starttime);
 			}
 			/*
 			int idx = 28;
@@ -67,6 +76,13 @@ public class Handler {
 		catch(Exception e) {
 			e.printStackTrace();
 		}
+	}
+	
+	private int getAudioIdx(byte[] buf) {
+		return ((buf[27] & 0xff) << 24) |
+				((buf[28] & 0xff) << 16) |
+				((buf[29] & 0xff) <<  8) |
+				((buf[30] & 0xff) <<  0);
 	}
 	
 	private int getFrameNum(byte[] buf) {
@@ -91,6 +107,7 @@ public class Handler {
 		
 		out = ToolFactory.makeWriter(Server.ROOT_DIR + "/" + fname);
 		out.addVideoStream(0, 0, ICodec.ID.CODEC_ID_H264, height, width);
+		out.addAudioStream(1, 0, ICodec.ID.CODEC_ID_AAC, 1, 11025);
 		
 		List<List<byte[]>> frames = new ArrayList<List<byte[]>>();
 		for(int i = 0; i <= maxFrame; i++) {
@@ -102,32 +119,51 @@ public class Handler {
 			frames.get(getFrameNum(buf)).add(buf);
 		}
 		
-		long lastTime = 0;
-		for(int i = 0; i < frames.size(); i++) {
+		short sbuf[] = new short[512];
+		
+		long lastVTime = 0, lastATime = 0;
+		for(int i = 0, j = 0; i < frames.size() && j < audio.size();) {
 			if(recTime.containsKey(i)) {
-				lastTime = recTime.get(i);
-			} else {
-				lastTime++;
+				lastVTime = recTime.get(i);
 			}
 			
-			for(int j = 0; j < frames.get(i).size(); j++) {
-				byte[] buf = frames.get(i).get(j);
-				int idx = 35;
-				int offset = 0;
-				for(int k = 0; k < width; k++) {
-					
-					int rgb = 0xff000000;
-					rgb |= ((buf[idx] & 0xff) & (0xf << offset)) << (4 - offset);
-					offset ^= 4; if(offset == 0) idx++;
-					rgb |= (((buf[idx] & 0xff) & (0xf << offset)) << (4 - offset)) << 8;
-					offset ^= 4; if(offset == 0) idx++;
-					rgb |= (((buf[idx] & 0xff) & (0xf << offset)) << (4 - offset)) << 16;
-					offset ^= 4; if(offset == 0) idx++;
-					img.setRGB(height - 1 - getRowNum(buf), k, rgb);
+			if(audioTime.containsKey(j)) {
+				lastATime = audioTime.get(j);
+			}
+			
+			if(lastATime < lastVTime) {
+				byte[] samples = audio.get(j);
+				if(samples != null) {
+					for(int k = 0; k < samples.length / 2; k++) {
+						sbuf[k] = (short) (((samples[k * 2] & 0xff) << 8) | (samples[k * 2 + 1] & 0xff));
+					}
+					out.encodeAudio(1, sbuf);
 				}
+				j++;
+				lastATime++;
+			} else {
+
+
+				for(int l = 0; l < frames.get(i).size(); l++) {
+					byte[] buf = frames.get(i).get(l);
+					int idx = 35;
+					int offset = 0;
+					for(int k = 0; k < width; k++) {
+
+						int rgb = 0xff000000;
+						rgb |= ((buf[idx] & 0xff) & (0xf << offset)) << (4 - offset);
+						offset ^= 4; if(offset == 0) idx++;
+						rgb |= (((buf[idx] & 0xff) & (0xf << offset)) << (4 - offset)) << 8;
+						offset ^= 4; if(offset == 0) idx++;
+						rgb |= (((buf[idx] & 0xff) & (0xf << offset)) << (4 - offset)) << 16;
+						offset ^= 4; if(offset == 0) idx++;
+						img.setRGB(height - 1 - getRowNum(buf), k, rgb);
+					}
+				}
+
+				out.encodeVideo(0, img, lastVTime, TimeUnit.NANOSECONDS);
+				lastVTime++;
 			}
-			
-			out.encodeVideo(0, img, lastTime, TimeUnit.NANOSECONDS);
 		}
 		out.close();
 		
