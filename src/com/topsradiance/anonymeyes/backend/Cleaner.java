@@ -1,6 +1,5 @@
 package com.topsradiance.anonymeyes.backend;
 
-import java.util.ConcurrentModificationException;
 
 public class Cleaner extends Thread {
 	@Override
@@ -18,8 +17,8 @@ public class Cleaner extends Thread {
 				try {
 					Thread.sleep(2500);
 				} catch(InterruptedException e) {}
-			} catch(ConcurrentModificationException e) {
-
+			} catch(Exception e) {
+				e.printStackTrace();
 			}
 		}
 	}
